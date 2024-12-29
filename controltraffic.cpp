@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include <queue>
 #include <map>
@@ -19,21 +18,20 @@ public:
     map<string, int> nameToIndex; // Map node names to indices
     map<int, string> indexToName; // Map indices to node names
 
-    void loadGraph(const string& fileName) {
-        ifstream inputFile(fileName);
-        string line;
+    // Method to input the graph data manually
+    void loadGraph() {
+        int numEdges;
+        cout << "Enter number of edges: ";
+        cin >> numEdges;
 
-        while (getline(inputFile, line)) {
-            istringstream lineStream(line);
+        for (int i = 0; i < numEdges; ++i) {
             string nodeStart, nodeEnd;
             int edgeWeight;
 
-            if (line.empty() || line[0] == '#') continue;
+            cout << "Enter edge " << i + 1 << " (start_node, end_node, weight): ";
+            cin >> nodeStart >> nodeEnd >> edgeWeight;
 
-            getline(lineStream, nodeStart, ',');
-            getline(lineStream, nodeEnd, ',');
-            lineStream >> edgeWeight;
-
+            // Add the nodes if they are not already present
             if (nameToIndex.find(nodeStart) == nameToIndex.end()) {
                 nameToIndex[nodeStart] = totalNodes;
                 indexToName[totalNodes] = nodeStart;
@@ -56,8 +54,6 @@ public:
             adjacencyMatrix[nameToIndex[nodeStart]][nameToIndex[nodeEnd]] = edgeWeight;
             adjacencyMatrix[nameToIndex[nodeEnd]][nameToIndex[nodeStart]] = edgeWeight;
         }
-
-        inputFile.close();
     }
 
     void initialize() {
@@ -135,7 +131,8 @@ public:
 
 int main() {
     DijkstraWithHeap algorithm;
-    algorithm.loadGraph("city_map.txt");
+
+    algorithm.loadGraph(); // Load graph interactively
 
     algorithm.initialize();
     algorithm.calculateShortestPaths();
